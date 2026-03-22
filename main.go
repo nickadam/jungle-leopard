@@ -126,6 +126,8 @@ var (
 	fStretch   = flag.Bool("stretch", false, "Stretch image to fill display (default: letterbox)")
 	fHeadless    = flag.Bool("headless", true, "Run browser headlessly (use -headless=false to show the window)")
 	fMaxFrameKB  = flag.Int("max-frame-kb", defaultMaxFrameKB, "Auto-reduce JPEG quality until frame fits this size (0 = disabled)")
+	fBrowserW    = flag.Int("browser-w", dispW, "Browser viewport width (browser-stream)")
+	fBrowserH    = flag.Int("browser-h", dispH, "Browser viewport height (browser-stream)")
 )
 
 // ---------------------------------------------------------------------------
@@ -1589,9 +1591,9 @@ func cmdBrowserStream(startURL string) {
 	//   rotate=false (vertical):  browser at dispH×dispW (462×1920), screenshot
 	//                             sent as-is so the panel's physical rotation
 	//                             displays the portrait content naturally.
-	viewW, viewH := dispW, dispH
+	viewW, viewH := *fBrowserW, *fBrowserH
 	if !rotate {
-		viewW, viewH = dispH, dispW
+		viewW, viewH = *fBrowserH, *fBrowserW
 	}
 
 	opts := append(chromedp.DefaultExecAllocatorOptions[:],
@@ -1858,6 +1860,7 @@ Commands:
                                 jl_tool browser-stream https://example.com
                                 jl_tool -headless=false browser-stream https://example.com
                                 jl_tool -rotate=false browser-stream https://example.com
+                                jl_tool -browser-w 1280 -browser-h 720 browser-stream https://example.com
                               While running, type a URL + Enter to navigate live.
 
   ls [path]                   List directory on device
